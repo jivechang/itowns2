@@ -22,15 +22,34 @@ and open the template in the editor.
             }
             #menuDiv {position: absolute; top:0px; margin-left: 0px;}
 
+            #debugDiv {
+                display: flex;
+                position: absolute;
+                bottom: 0px;
+                left: 0px;
+                width: 100%;
+                height: 300px;
+            }
+            #debugDiv > div {
+                flex: 1 1 auto;
+            }
+
 
         </style>
         <meta charset="UTF-8">
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5.1/dat.gui.min.js"></script>
+        <script src="http://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
     </head>
     <body>
         <div id="viewerDiv"></div>
+
+        <div id="debugDiv"></div>
+
+        <script src="debug.js"> </script>
+
         <script src="dist/itowns2.js"> </script>
         <script type="text/javascript">
 
@@ -706,6 +725,36 @@ and open the template in the editor.
         // gui.add(text, 'StreetLevelImagery').onChange(function(newValue) {
         //     itowns.viewer.setStreetLevelImageryOn(newValue);
         // });
+
+        createChart('debugDiv', 'visibility',
+            {
+                data: [
+                    { title: 'visible', data: function(qt) { return qt.getGlobalStat('visible'); } },
+                    { title: 'culled', data: function(qt) { return qt.getGlobalStat('culled'); } },
+                    { title: 'displayed', data: function(qt) { return qt.getGlobalStat('displayed'); } }
+                ],
+                context: scene.layers[0].node.tiles
+            });
+
+        createChart('debugDiv', 'Cache',
+            {
+                data: [
+                    { title: 'hit', data: function(wmts) { return wmts.cache.statistics.hit; } },
+                    { title: 'miss', data: function(wmts) { return wmts.cache.statistics.miss; } },
+                    { title: 'elements', data: function(wmts) { return wmts.cache.statistics.count; } },
+                ],
+                context: itowns.viewer.getProtocolProvider('wmts')
+            });
+
+        createChart('debugDiv', 'Commands',
+            {
+                data: [
+                    { title: 'running', data: function() { return scene.managerCommand.commandsRunningCount(); } },
+                    { title: 'pending', data: function() { return scene.managerCommand.commandsWaitingExecutionCount(); } },
+                    { title: 'cancelled', data: function() { return scene.managerCommand.commandsCancelledCount() } },
+                ],
+                context: itowns.viewer.getProtocolProvider('wmts')
+            });
 
         </script>
     </body>

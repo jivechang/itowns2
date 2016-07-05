@@ -10,6 +10,7 @@ export const NO_SUBDIVIDE = 0;
 export const SUBDIVIDE = 1;
 export const CLEAN = 2;
 
+var __DEV__ = true;
 function BrowseTree(engine) {
     //Constructor
 
@@ -69,6 +70,14 @@ BrowseTree.prototype.quadtreeNodeVisibilityUpdate = function(node, camera, proce
         process.SSE(node, camera, params);
 
         this.uniformsProcess(node, camera);
+
+        if (__DEV__) {
+            params.tree.updateStatistics('visible', node.level, 1);
+        }
+    } else {
+        if (__DEV__) {
+            params.tree.updateStatistics('culled', node.level, 1);
+        }
     }
 
     return wasVisible || isVisible;
@@ -126,6 +135,9 @@ BrowseTree.prototype.browse = function(tree, camera, process, layersConfig, opti
     };
 
     var rootNode = tree.children[0];
+    if (action === 'visibility_update') {
+        this.tree.resetStatistics();
+    }
 
     for (var i = 0; i < rootNode.children.length; i++) {
         this._browse(rootNode.children[i], camera, process, action, params);
@@ -147,6 +159,11 @@ BrowseTree.prototype._browse = function(node, camera, process, action, params) {
             {
                 if (this.quadtreeNodeVisibilityUpdate(node, camera, process, params)) {
                     var child_action = node.isDisplayed() ? 'hide_all' : action;
+                    if (__DEV__) {
+                        if (node.isDisplayed()) {
+                            params.tree.updateStatistics('displayed', node.level, 1);
+                        }
+                    }
                     for (var i = 0; i < node.children.length; i++) {
                         this._browse(node.children[i], camera, process, child_action, params);
                     }
