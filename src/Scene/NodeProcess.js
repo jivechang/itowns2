@@ -342,7 +342,7 @@ NodeProcess.prototype.SSE = function(node, camera, params) {
     var hidden = sse && node.childrenLoaded();
 
     if (params.withUp) {
-        if (sse) {
+        if (sse && params.tree.canSubdivideNode(node)) {
             // big screen space error: subdivide node, display children if possible
             this.subdivideNode(node, camera, params);
         } else if (!hidden && !node.pendingSubdivision) {
