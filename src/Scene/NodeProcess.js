@@ -278,16 +278,8 @@ function updateNodeElevation(quadtree, node, layersConfig, force) {
     var ancestor = null;
 
     if (currentElevation < 0) {
-        // no texture: use elevation texture from 1st non-downscaled parent
-        var n = node.getNodeAtLevel(node.levelElevation);
-        while (n && n.materials[RendererConstant.FINAL].getLevelLayerColor(0, 0) < n.level) {
-            n = n.parent;
-            if (n && !n.materials) {
-                n = null;
-            }
-        }
-
-        ancestor = n || node.getNodeAtLevel(node.levelElevation);
+        // no texture: use elevation texture from parent
+        ancestor = node.parent;
     } else if (currentElevation < node.levelElevation) {
         // downscaled texture: download our level
         ancestor = node.getNodeAtLevel(node.levelElevation);
