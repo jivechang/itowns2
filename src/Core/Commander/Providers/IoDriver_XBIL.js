@@ -41,8 +41,9 @@ IoDriver_XBIL.prototype.parseXBil = function(buffer) {
         }
     }
 
-    if (result.max === -1000000)
-        throw new Error('Error processing XBIL');
+    if (result.max === -1000000) {
+        return null;
+    }
 
     return result;
 };

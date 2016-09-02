@@ -132,14 +132,13 @@ WMTS_Provider.prototype.getXbilTexture = function(tile, layer, parameters) {
     var textureCache = this.cache.getRessource(url);
 
     if (textureCache !== undefined) {
-        return Promise.resolve( textureCache ?
+        return Promise.resolve(
             {
                 pitch,
                 texture: textureCache.texture,
                 min: textureCache.min,
                 max: textureCache.max
-            } :
-            null);
+            });
     }
 
 
@@ -153,24 +152,24 @@ WMTS_Provider.prototype.getXbilTexture = function(tile, layer, parameters) {
     // -> bug #74
 
     return this._IoDriver.read(url).then(result => {
-        result.pitch = pitch;
-        result.texture = this.getTextureFloat(result.floatArray);
-        result.texture.generateMipmaps = false;
-        result.texture.magFilter = THREE.LinearFilter;
-        result.texture.minFilter = THREE.LinearFilter;
+        // If xbil buffer is empty then result will be null.
+        // This is not an error!
+        if (result !== null) {
+            result.pitch = pitch;
+            result.texture = this.getTextureFloat(result.floatArray);
+            result.texture.generateMipmaps = false;
+            result.texture.magFilter = THREE.LinearFilter;
+            result.texture.minFilter = THREE.LinearFilter;
 
-        // In RGBA elevation texture LinearFilter give some errors with nodata value.
-        // need to rewrite sample function in shader
-        //result.texture.magFilter = THREE.NearestFilter;
-        //result.texture.minFilter = THREE.NearestFilter;
+            // In RGBA elevation texture LinearFilter give some errors with nodata value.
+            // need to rewrite sample function in shader
+            //result.texture.magFilter = THREE.NearestFilter;
+            //result.texture.minFilter = THREE.NearestFilter;
 
-        this.cache.addRessource(url, result);
+            this.cache.addRessource(url, result);
+        }
 
         return result;
-    }).catch(() => {
-        var texture = null;
-        this.cache.addRessource(url, texture);
-        return texture;
     });
 };
 
@@ -215,11 +214,7 @@ WMTS_Provider.prototype.getColorTexture = function(coWMTS, pitch, layer) {
 
         return result;
 
-    }.bind(this)).catch(function( /*reason*/ ) {
-        result.texture = null;
-
-        return result;
-    });
+    }.bind(this));
 
 };
 
