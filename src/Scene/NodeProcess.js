@@ -316,9 +316,16 @@ function updateNodeElevation(quadtree, node, layersConfig, force) {
 
         // Decide which texture (level) to download
         let ancestor = null;
-        if (currentElevation < 0) {
+        if (currentElevation === 0) {
             // no texture: use elevation texture from parent
-            ancestor = node.parent;
+            let parentElevationLevel = node.parent.materials[RendererConstant.FINAL].getLevelLayerColor(0, 0);
+
+            if (parentElevationLevel > 0) {
+                ancestor = node.getNodeAtLevel(parentElevationLevel);
+            }
+        } else if (currentElevation < 0) {
+            // got an empty texture, no need to retry
+            return Promise.resolve(node);
         } else {
             var targetLevel = chooseNextLevelToFetch(layer.updateStrategy.type, node.level, currentElevation, layer.updateStrategy.options);
 

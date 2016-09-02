@@ -254,17 +254,23 @@ TileMesh.prototype.downScaledColorLayer = function(layer) {
 }
 
 
-TileMesh.prototype.downScaledLayer = function(id) {
+TileMesh.prototype.isLayerTypeImprovable = function(type) {
     var mat = this.materials[RendererConstant.FINAL];
 
-    if (id === l_ELEVATION) {
-        if (mat.Textures[l_ELEVATION][0].level < 0) {
-            return false;
-        } else {
-            return mat.Textures[l_ELEVATION][0].level <
-                this.level;
+    if (type === l_ELEVATION) {
+        let tex = mat.Textures[l_ELEVATION][0];
+        // 3 possible cases
+        //   - initialization (no texture)
+        if (tex === undefined) {
+            return true;
         }
-    } else if (id === l_COLOR) {
+        //   - blank texture (eg: empty xbil texture)
+        if (tex.level === -1) {
+            return false;
+        }
+        //   - regular texture
+        return tex.level < this.level;
+    } else if (type === l_COLOR) {
         // browse each layer
         var nb = mat.nbTextures[1];
         for (var slot=0; slot<nb; slot++) {
@@ -275,15 +281,6 @@ TileMesh.prototype.downScaledLayer = function(id) {
     }
 
     return false;
-};
-
-TileMesh.prototype.getDownScaledLayer = function() {
-    if (this.downScaledLayer(l_COLOR))
-        return l_COLOR;
-    else if (this.downScaledLayer(l_ELEVATION))
-        return l_ELEVATION;
-    else
-        return undefined;
 };
 
 TileMesh.prototype.normals = function() {
