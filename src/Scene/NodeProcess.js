@@ -7,7 +7,7 @@
 import BoundingBox from 'Scene/BoundingBox';
 import Camera from 'Renderer/Camera';
 import MathExt from 'Core/Math/MathExtented';
-import THREE from 'THREE';
+import * as THREE from 'THREE';
 import defaultValue from 'Core/defaultValue';
 import Projection from 'Core/Geographic/Projection';
 

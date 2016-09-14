@@ -6,9 +6,7 @@
 //    Zoom - middle mouse, or mousewheel / touch: two finger spread or squish
 //    Pan - right mouse, or arrow keys / touch: three finter swipe
 
-/* global document,window*/
-
-import THREE from 'three';
+import * as THREE from 'THREE';
 import Sphere from 'Core/Math/Sphere';
 import CustomEvent from 'custom-event';
 
@@ -172,10 +170,11 @@ var snapShotCamera;
 
 /////////////////////////
 
+/* globals document,window */
+
 function GlobeControls(camera, domElement, engine) {
 
     var scene = engine.scene;
-
     this.camera = camera;
     snapShotCamera =  new SnapCamera(camera);
 
@@ -225,8 +224,9 @@ function GlobeControls(camera, domElement, engine) {
 
 
     if(enableTargetHelper)
-
+    {
         this.pickingHelper = new THREE.AxisHelper( 500000 );
+    }
 
     // Mouse buttons
     this.mouseButtons = {
@@ -445,7 +445,9 @@ function GlobeControls(camera, domElement, engine) {
             var delta = coord.altitude()  - (bbox.top() + radiusCollision);
 
             if(delta<0)
+            {
                 position.setLength(position.length()-delta);
+            }
         }
 
         return position;
