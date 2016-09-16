@@ -223,6 +223,10 @@ Globe.prototype.getZoomLevel = function( /*id*/ ) {
     return cO();
 };
 
+Globe.prototype.getTile = function(coordinate) {
+    return this.tiles.getTile(coordinate);
+};
+
 Globe.prototype.setRealisticLightingOn = function(bool) {
 
     this.atmosphere.setRealisticOn(bool);

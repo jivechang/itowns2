@@ -131,7 +131,7 @@ TileMesh.prototype.setUuid = function(uuid) {
 TileMesh.prototype.getUuid = function(uuid) {
 
     return this.materials[RendererConstant.ID].getUuid(uuid);
-}
+};
 
 TileMesh.prototype.setColorLayerParameters = function(paramsTextureColor) {
     this.materials[RendererConstant.FINAL].setParam(paramsTextureColor);
@@ -231,8 +231,7 @@ TileMesh.prototype.setTextureElevation = function(elevation) {
         return;
     }
 
-    var texture = undefined;
-    var pitScale;
+    var texture, pitScale;
 
     if (elevation === -1) { // No texture
         this.currentElevation = -2;

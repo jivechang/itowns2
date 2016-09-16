@@ -26,19 +26,28 @@ var vector = new THREE.Vector3();
 Sphere.prototype.intersectWithRay = function(ray) {
 
     var pc = ray.closestPointToPoint(this.center);
-    var a = pc.length();
+    var a = pc.length(),d,b;
 
+    // TODO: recompute mirror ray
     if (a > this.radius)
-        return undefined; // new THREE.Vector3();
+    {
+        var mirrorPoint = pc.clone().setLength(this.radius*2 - a);
+        d = ray.direction.subVectors(mirrorPoint,ray.origin).normalize();
+        pc = ray.closestPointToPoint(this.center);
+        a = pc.length();
 
-    if (ray.origin.length() > this.radius) {
-        var d = ray.direction.clone();
-        var b = Math.sqrt(this.radius * this.radius - a * a);
+        b = Math.sqrt(this.radius * this.radius - a * a);
         d.setLength(b);
 
-        return vector.subVectors(pc, d);
-    } else
-        return undefined;
+        return vector.addVectors(pc, d);
+    }
+
+    // TODO: check all intersections : if (ray.origin.length() > this.radius)
+    d = ray.direction.clone();
+    b = Math.sqrt(this.radius * this.radius - a * a);
+    d.setLength(b);
+
+    return vector.subVectors(pc, d);
 
 }
 
